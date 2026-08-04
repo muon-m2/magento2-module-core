@@ -1,0 +1,25 @@
+{
+    "name": "muon/module-core",
+    "description": "Shared utilities and vendored front-end assets used by more than one Muon module.",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Serge Autushka",
+            "email": "s.autushka@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+        "magento/framework": "^103.0.9"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Muon\\Core\\": ""
+        }
+    }
+}

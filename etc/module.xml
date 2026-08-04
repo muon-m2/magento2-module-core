@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!--
+  No <sequence>. This module is a leaf: it provides shared utilities and a vendored asset and depends
+  on nothing of ours. Anything that sequences against it would be inverting the dependency.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Muon_Core"/>
+</config>
