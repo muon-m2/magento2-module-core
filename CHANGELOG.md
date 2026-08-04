@@ -6,6 +6,23 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-08-04
+
+### Changed
+
+- **Relicensed from proprietary to MIT, so the repository can be made public.** This package is generic
+  infrastructure — a CSS allow-list sanitiser, adminhtml button blocks, a scope-qualified cache-tag
+  helper and a vendored ISC bundle — with no business logic in it.
+
+  The practical driver is dependency resolution: consumers' CI could not install a private package
+  without a credential, which had already forced `Muon_TopMenu` to strip this dependency before
+  running its unit tests. That workaround stopped being viable the moment a consumer referenced a
+  class from here rather than only an asset.
+
+  Matches the other public `muon/*` repositories, which are MIT. The vendored `accessible-menu`
+  bundle remains ISC and is unaffected — its notice ships alongside it and is declared in
+  `extra.third-party-licenses`.
+
 ## [1.2.0] - 2026-08-04
 
 ### Added
