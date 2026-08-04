@@ -89,7 +89,7 @@ class ScopedCacheTags
             return $this->forWebsite($scopeId);
         }
 
-        return [$this->baseTag];
+        return [$this->estateWide()];
     }
 
     /**
@@ -110,6 +110,6 @@ class ScopedCacheTags
 
         // A website with no store views purges nothing of its own; falling back to the bare tag keeps
         // the save meaningful rather than a silent no-op.
-        return $tags === [] ? [$this->baseTag] : $tags;
+        return $tags === [] ? [$this->estateWide()] : $tags;
     }
 }
