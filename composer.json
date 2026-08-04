@@ -3,6 +3,19 @@
     "description": "Shared utilities and vendored front-end assets used by more than one Muon module.",
     "type": "magento2-module",
     "license": "proprietary",
+    "extra": {
+        "third-party-licenses": [
+            {
+                "name": "accessible-menu",
+                "version": "4.4.0",
+                "license": "ISC",
+                "homepage": "https://github.com/NickDJM/accessible-menu",
+                "path": "view/frontend/web/js/vendor/accessible-menu-top-link-disclosure.iife.js",
+                "notice": "view/frontend/web/js/vendor/accessible-menu-LICENSE.txt",
+                "provenance": "view/frontend/web/js/vendor/PROVENANCE.md"
+            }
+        ]
+    },
     "version": "1.0.0",
     "authors": [
         {

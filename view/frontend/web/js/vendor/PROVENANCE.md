@@ -25,17 +25,21 @@ Verify with:
 sha256sum view/frontend/web/js/vendor/accessible-menu-top-link-disclosure.iife.js
 ```
 
-## Why this module carries its own copy
+## Why this module owns the only copy
 
-`Muon_TopMenu` vendors the identical build. That duplication is deliberate, not an oversight: the two
-modules are **mutually exclusive alternatives** — a store view runs one or the other — and sharing the
-asset would make `Muon_HeaderMenu` depend on a module it exists to replace. A store running only this
-module would then have to install the other to get its navigation JavaScript.
+`Muon_TopMenu` and `Muon_HeaderMenu` both need this build, and both used to carry their own copy.
+That duplication was deliberate at the time: the two modules are **mutually exclusive alternatives**
+— a store view runs one or the other — so sharing the asset through either would have made one
+depend on the module it exists to replace, and a store running only one of them would have had to
+install its rival to get its navigation JavaScript.
 
-The cost is one 33 KB file duplicated on disk in an install that has both modules present, and only
-one of the two is ever loaded into a page. The alternative — extracting a third `Muon_*` package
-purely to hold one vendored blob — buys a shared 33 KB at the price of a third module to version,
-publish and keep in sync across two consumers. Revisit if a third module ever needs the same library.
+`Muon_Core` removes that objection. It is a leaf: it depends on no other Muon package, so both
+consumers can require it without depending on each other. As of `Muon_TopMenu` 2.2.0 this package
+holds the only copy, and both modules load it as `Muon_Core::js/vendor/…`.
+
+The gain is not the 33 KB. It is that a security bump to `accessible-menu` is now applied in one
+place and verified in one place — the checksum step in this repository's CI is the guard, and it
+moved here with the blob.
 
 ## Why it is loaded as a plain head script
 
