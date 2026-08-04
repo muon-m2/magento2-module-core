@@ -6,7 +6,32 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-04
+
 ### Added
+
+- **Shared adminhtml edit-form buttons** — `Block\Adminhtml\Button\BackButton`, `SaveButton`
+  and `SaveAndContinueButton`, plus the `AbstractButton` base holding the URL builder and JS escaper
+  they share. Every Muon module with an admin form carried its own copies: five `BackButton`s across
+  three modules, byte-identical apart from the namespace.
+
+  `SaveButton` and `SaveAndContinueButton` take the form namespace (and, for save, a label) as DI
+  arguments, so a consumer declares a virtual type rather than a subclass. Both are `@api`: consuming
+  `ui_component` form XML references them by FQCN.
+
+  Two behaviours were unified rather than carried forward as-is:
+
+  - **The URL is escaped.** Four of the five `BackButton` copies interpolated `getUrl()` straight
+    into a `location.href = '…'` literal; one escaped it. The escaping version is the one kept.
+  - **Plain Save passes `params[0] = false`.** One copy passed `true` with no accompanying `back`
+    value — a redirect flag with no destination. Magento core's own plain Save passes `false` and
+    lets the controller decide (`Magento\Cms\Block\Adminhtml\Page\Edit\SaveButton`); `true` belongs
+    to the save-and-continue family, which pairs it with `['back' => 'edit']`.
+
+  These buttons are for forms on the `buttonAdapter` mechanism. A form still wired with the legacy
+  `['button' => ['event' => 'save']]` + `form-role` attributes needs its own — that is different
+  wiring, not a different label.
+
 - CI now verifies the vendored `accessible-menu` bundle against the SHA-256 recorded in
   `PROVENANCE.md`, so a swapped blob is distinguishable from a legitimate bump. The package is in no
   manifest, so no SCA or Dependabot advisory would ever reach it. Ported from `Muon_TopMenu`, which
@@ -21,7 +46,6 @@ this package follows [Semantic Versioning](https://semver.org/).
   deliberate **only until this package existed** — a leaf both can require without depending on each
   other — rather than presenting it as the standing arrangement.
 
-No release: this is CI and metadata only, with no change to any shipped PHP, template or asset.
 
 ## [1.0.0] - 2026-08-03
 
