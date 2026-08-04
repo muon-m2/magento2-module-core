@@ -6,6 +6,27 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-04
+
+### Added
+
+- **`Model\Cache\Tag\ScopedCacheTags`** — derives an estate-wide cache tag and its scope-qualified
+  variants from one base tag, supplied as a DI argument.
+
+  A module that declares a single scope-less tag on every cacheable render, and purges by that same
+  tag whatever scope was saved, evicts the full-page cache for the whole estate on any config save:
+  PageCache folds block identities into `X-Magento-Tags`, so a `showInStore="1"` field changed on one
+  store view purges all of them. `Muon_HeaderMenu` and `Muon_TopMenu` hit that independently and
+  fixed it the same way — which is why the algorithm belongs here rather than in either of them.
+
+  Consumed through a virtual type per module, each supplying its own base tag. The superset of the
+  two implementations is kept, including `estateWide()`, which only one of them had.
+
+  Note the **cache type itself is deliberately not shared**: its entire per-module difference is the
+  `TYPE_IDENTIFIER` and `CACHE_TAG` constants, which are `@api` and identify the type in Cache
+  Management. Magento's `TagScope` is already the shared base, and a further one would add a
+  dependency without removing a line.
+
 ## [1.1.0] - 2026-08-04
 
 ### Added
