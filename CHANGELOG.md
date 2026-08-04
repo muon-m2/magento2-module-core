@@ -12,11 +12,16 @@ this package follows [Semantic Versioning](https://semver.org/).
   manifest, so no SCA or Dependabot advisory would ever reach it. Ported from `Muon_TopMenu`, which
   dropped its own copy of the bundle in 2.2.0 — the guard moved here with the blob it protects.
 
-### Changed
-- `PROVENANCE.md` no longer describes the duplication across `Muon_TopMenu` / `Muon_HeaderMenu` as
-  deliberate. That rationale predated this package: both consumers now load the single copy here.
+- `extra.third-party-licenses` declaring the vendored `accessible-menu` build, moved here from
+  `Muon_TopMenu`, whose copy of the blob it described is removed in 2.2.0. This package had no such
+  entry, so without the move the licence metadata would have been lost rather than merely dangling.
 
-No release: this is a CI and documentation change with no effect on the installed package.
+### Changed
+- `PROVENANCE.md` now explains that the duplication across `Muon_TopMenu` / `Muon_HeaderMenu` was
+  deliberate **only until this package existed** — a leaf both can require without depending on each
+  other — rather than presenting it as the standing arrangement.
+
+No release: this is CI and metadata only, with no change to any shipped PHP, template or asset.
 
 ## [1.0.0] - 2026-08-03
 
