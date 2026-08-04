@@ -66,10 +66,16 @@ interface CssValueSanitizerInterface
     /**
      * Reduce a value to one of an explicit allow-list, falling back to a caller-supplied default.
      *
+     * Unlike the other methods this one never returns null, so the caller owns the fallback — and
+     * with it one precondition: $default MUST itself be a member of $allowed, and $allowed must be
+     * non-empty. The guarantee below is conditional on that. Nothing here validates it, because a
+     * default outside its own allow-list is a programming error at the call site, not merchant
+     * input to be sanitised.
+     *
      * @param string $value
-     * @param string[] $allowed
-     * @param string $default
-     * @return string Always one of $allowed.
+     * @param string[] $allowed Non-empty.
+     * @param string $default Must be one of $allowed.
+     * @return string One of $allowed, provided the caller honoured the precondition above.
      */
     public function keyword(string $value, array $allowed, string $default): string;
 }
