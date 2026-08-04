@@ -71,6 +71,27 @@ jobs:
             --runtime-set ignore_warnings_on_exit 1 \
             .
 
+      # PROVENANCE.md records a SHA-256 for the vendored accessible-menu bundle and asks that it be
+      # updated in the same commit as the blob. Without this, a swapped blob is indistinguishable
+      # from a legitimate bump. The package is in no manifest either, so no SCA or Dependabot
+      # advisory would ever reach it. Ported from Muon_TopMenu in 2.2.0, when this package became
+      # the single owner of the bundle.
+      - name: Verify vendored JS checksum
+        run: |
+          cd view/frontend/web/js/vendor
+          recorded="$(grep -oiE '\b[a-f0-9]{64}\b' PROVENANCE.md | head -1)"
+          if [ -z "$recorded" ]; then
+            echo "::error::No SHA-256 found in PROVENANCE.md"; exit 1
+          fi
+          actual="$(sha256sum accessible-menu-top-link-disclosure.iife.js | cut -d' ' -f1)"
+          if [ "$recorded" != "$actual" ]; then
+            echo "::error::Vendored bundle does not match PROVENANCE.md"
+            echo "  recorded: $recorded"
+            echo "  actual:   $actual"
+            exit 1
+          fi
+          echo "Vendored bundle matches PROVENANCE.md ($actual)"
+
       - name: PHPMD
         run: |
           # Test/ is excluded deliberately: PHPMD's MissingImport and CouplingBetweenObjects
