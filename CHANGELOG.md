@@ -10,7 +10,7 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **Relicensed from proprietary to MIT, and the repository is now public.** This package is generic
+- **Relicensed from proprietary to MIT, so the repository can be made public.** This package is generic
   infrastructure — a CSS allow-list sanitiser, adminhtml button blocks, a scope-qualified cache-tag
   helper and a vendored ISC bundle — with no business logic in it.
 
