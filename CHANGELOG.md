@@ -6,6 +6,36 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-08-04
+
+### Added
+
+- **Per-store-view caption overrides**, shared by every Muon module whose entities render a
+  merchant-authored caption. Three new `@api` contracts:
+  - `Api\Data\ScopedCaptionInterface` — one store view's caption, serialisable into a REST payload.
+  - `Api\CaptionStorageInterface` — bulk read and diffing write of an entity's overrides. No table
+    name appears in any signature; an implementation is bound per entity through a virtual type
+    carrying its table and columns, the same way `ScopedCacheTags` is bound with its base tag.
+    Deliberately has **no default preference**, so a missing virtual type is a wiring error rather
+    than a query-time failure with empty identifiers.
+  - `Api\CaptionResolverInterface` — chooses the override when present, otherwise returns the
+    entity's own caption **verbatim**. The default is never passed through the translator: a menu
+    caption is merchant content, and `__()` would let an unrelated i18n entry silently rewrite a
+    caption whose text collides with a translation key.
+- `Model\Caption\CaptionValidator` — store view must exist and be non-zero, one caption per store
+  view, 255-character limit matching the column. Errors are accumulated and returned rather than
+  thrown, because the two consuming modules disagree on style and the list satisfies both.
+- `Model\Caption\CaptionListConverter` — converts between the DTO list the API speaks and the plain
+  map storage writes, in both directions, preserving the `null` that means "not supplied".
+
+### Fixed
+
+- **Declared `magento/module-store` and `magento/module-backend`, which the code has always used
+  but `composer.json` never listed.** `Model\Cache\Tag\ScopedCacheTags` imports
+  `Magento\Store\Model\StoreManagerInterface` and the adminhtml button blocks import
+  `Magento\Backend`; both were undeclared, so a consumer installing this package alone could resolve
+  a dependency set that cannot autoload it. Found while adding the caption machinery.
+
 ## [1.3.0] - 2026-08-04
 
 ### Changed

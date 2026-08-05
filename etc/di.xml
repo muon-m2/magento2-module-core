@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
+<!--
+  CaptionStorageInterface deliberately has NO preference. It is bound per entity through a virtual
+  type carrying that entity's table and column names, so an unbound consumer fails at wiring time
+  rather than at query time with empty identifiers.
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Muon\Core\Api\CssValueSanitizerInterface"
                 type="Muon\Core\Model\Style\CssValueSanitizer"/>
+    <preference for="Muon\Core\Api\Data\ScopedCaptionInterface"
+                type="Muon\Core\Model\Caption\ScopedCaption"/>
+    <preference for="Muon\Core\Api\CaptionResolverInterface"
+                type="Muon\Core\Model\Caption\CaptionResolver"/>
 </config>
