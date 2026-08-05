@@ -72,6 +72,15 @@ class CaptionScopeTest extends TestCase
             'negative' => ['-4', 0],
             // A stale bookmark must not 500; it degrades to showing default values.
             'unknown store' => ['99999', 0],
+            // is_numeric() accepts these and they cast to 1 and 2 — scoping the screen to a store
+            // the merchant never asked for.
+            'decimal' => ['1.5', 0],
+            'scientific notation' => ['2e1', 0],
+            'leading plus' => ['+2', 0],
+            'whitespace padded' => [' 2 ', 0],
+            // Concatenated so PHPCompatibility does not read it as a hexadecimal numeric
+            // literal; the point is that this STRING must be rejected.
+            'hex-looking' => ['0x' . '2', 0],
             'valid store as string' => ['2', 2],
             'valid store as int' => [3, 3],
         ];

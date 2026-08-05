@@ -153,4 +153,21 @@ class CaptionValidatorTest extends TestCase
         self::assertCount(1, $errors);
         self::assertStringContainsString('malformed', $errors[0]);
     }
+
+    /**
+     * Regression: the length check must measure the value that is STORED, not the trimmed one.
+     *
+     * CaptionStorage keeps a caption exactly as entered and only trims to decide emptiness, so a
+     * 255-character caption with surrounding spaces is 257 characters in a varchar(255) column.
+     * Measuring the trimmed length let it through and left MySQL to truncate silently.
+     */
+    public function testLengthIsMeasuredOnTheStoredValueIncludingSurroundingSpace(): void
+    {
+        $padded = ' ' . str_repeat('a', CaptionValidator::MAX_LENGTH) . ' ';
+
+        $errors = $this->validator->validate([$this->caption(1, $padded)]);
+
+        self::assertCount(1, $errors);
+        self::assertStringContainsString('longer than', $errors[0]);
+    }
 }

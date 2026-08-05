@@ -50,7 +50,14 @@ class CaptionScope
     {
         $raw = $this->request->getParam(self::STORE_PARAM);
 
-        if ($raw === null || $raw === '' || !is_numeric($raw)) {
+        // Digits only, not is_numeric(): that accepts "1.5" and "2e1", which cast to 1 and 2 and
+        // would scope the screen to a store the merchant never asked for. Matches the same guard in
+        // Muon_Core/js/grid/store-scoped-provider.
+        if (!is_string($raw) && !is_int($raw)) {
+            return 0;
+        }
+
+        if (preg_match('/^\d+$/', (string) $raw) !== 1) {
             return 0;
         }
 

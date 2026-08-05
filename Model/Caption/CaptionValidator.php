@@ -97,7 +97,10 @@ class CaptionValidator
             $problems[] = (string) __('Store view with ID %1 has more than one caption.', $storeId);
         }
 
-        if (mb_strlen(trim($caption->getCaption())) > self::MAX_LENGTH) {
+        // The UNTRIMMED value, because that is what gets stored: CaptionStorage keeps the caption
+        // exactly as entered and only trims to decide emptiness, so measuring the trimmed length
+        // would let 255 characters plus surrounding spaces through and let MySQL truncate silently.
+        if (mb_strlen($caption->getCaption()) > self::MAX_LENGTH) {
             $problems[] = (string) __(
                 'The caption for store view %1 is longer than %2 characters.',
                 $storeId,
