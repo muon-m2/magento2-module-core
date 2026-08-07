@@ -74,6 +74,17 @@ class VisibilityResolver implements VisibilityResolverInterface
      * render path is a programming error rather than an unrestricted subject — treat it as restricted
      * so a missing assignment load fails visibly instead of silently publishing everything.
      *
+     * THE COMPARISON IS STRICT, AND THAT MAKES `int[]` A LOAD-BEARING REQUIREMENT ON THE IMPLEMENTER,
+     * not a documentation nicety. A PDO driver with emulated prepares returns `"2"` rather than `2`
+     * for an INT column, and `in_array(2, ['2'], true)` is false — so an allow-list that was never
+     * cast at the persistence boundary hides the subject from exactly the group it names. That fails
+     * in the safe direction, which is why it is not a security bug, but it is silent and it looks to a
+     * merchant like the group filter simply does not work.
+     *
+     * Cast in the resource model, where the row is read. Casting here instead would paper over a
+     * data-integrity fault at every call site forever, and would still leave `getCustomerGroupIds()`
+     * lying about its own return type.
+     *
      * @param \Muon\Core\Api\Data\FilterableInterface $subject
      * @param \Muon\Core\Api\VisitorContextInterface $visitor
      * @return bool

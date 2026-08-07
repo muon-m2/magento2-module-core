@@ -204,6 +204,35 @@ class VisibilityResolverTest extends TestCase
     }
 
     /**
+     * THE COMPARISON IS STRICT, and this test exists so that is discoverable rather than folklore.
+     *
+     * A PDO driver with emulated prepares returns `"2"` for an INT column, so an allow-list that was
+     * not cast at the persistence boundary is `['2']`, and `in_array(2, ['2'], true)` is false. The
+     * subject then vanishes for exactly the group it names — silently, in the safe direction, and
+     * looking to a merchant like the group filter is simply broken.
+     *
+     * Pinning it here means an implementer chasing that symptom finds a test that names the cause,
+     * instead of reading the resolver and concluding it looks correct — which it is.
+     *
+     * @return void
+     */
+    public function testTheGroupComparisonIsStrictSoAnUncastAllowListMatchesNothing(): void
+    {
+        // Deliberately string ids, as an uncast fetchAll() would produce.
+        /** @phpstan-ignore argument.type */
+        $subject = $this->subject(groups: ['2']);
+
+        self::assertFalse(
+            $this->resolver()->isVisible(
+                $subject,
+                $this->visitor(groupId: 2),
+                $this->utc('2026-06-01 12:00:00')
+            ),
+            'Strict comparison is intentional; cast group ids to int in the resource model.'
+        );
+    }
+
+    /**
      * FAIL CLOSED, and this one is the subtle case. NULL means the assignment was never loaded —
      * on a render path that is a missing addAssignmentData() call, i.e. a programming error. Reading
      * it as "unrestricted" would turn a forgotten join into publishing every restricted row to

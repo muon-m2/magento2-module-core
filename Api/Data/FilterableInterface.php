@@ -90,6 +90,12 @@ interface FilterableInterface
      * render path null is a programming error — a missing assignment load — and the resolver treats
      * it as restricted so the mistake surfaces rather than publishing everything.
      *
+     * RETURN REAL INTEGERS. `int[]` is enforced by the resolver's strict comparison, not merely
+     * described by it: a PDO driver with emulated prepares hands back `"2"` for an INT column, and an
+     * allow-list of strings matches nothing. The subject then disappears for precisely the group it
+     * was meant for — silently, and in a way that reads as "the group filter is broken". Cast where
+     * the row is read.
+     *
      * @return int[]|null
      */
     public function getCustomerGroupIds(): ?array;
