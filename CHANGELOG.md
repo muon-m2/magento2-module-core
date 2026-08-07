@@ -6,6 +6,44 @@ this package follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-08-07
+
+### Added
+
+- **Audience and schedule filtering**, shared by every Muon module whose entities can be shown to
+  some visitors and not others. Three new `@api` contracts:
+  - `Api\Data\FilterableInterface` — the four filters (login state, customer group, device,
+    schedule window) plus their allowed values. Implemented by an entity that wants the shared
+    resolver.
+  - `Api\VisitorContextInterface` — store, customer group and login state for the current request,
+    plus a cache-key suffix. Read from `App\Http\Context` and never from the customer session: the
+    session is emptied by `DepersonalizePlugin` on cacheable pages, and only HTTP-context values
+    reach `Context::getVaryString()`, which keys the full-page cache.
+  - `Api\VisibilityResolverInterface` — one decision, one visitor, one instant.
+- `Model\VisibilityResolver` — the default implementation. Filters compose with AND and **every rule
+  fails closed**: an unrecognised visibility value, an unparseable schedule bound, or a
+  never-loaded group allow-list all hide the subject. Something that should have appeared and did
+  not is a support ticket; something that should have been hidden and appeared is a disclosure.
+- `Model\VisitorContext` — the default implementation, memoised per request and reset between them.
+- `Model\Validator\ScheduleWindow` — `validate()` for save-time messages and `contains()` for
+  render-time decisions. The two halves disagree on an unparseable bound on purpose: the first
+  reports it, the second treats it as closed.
+- `Model\Clock` — `nowUtc()`, the single place the store's timezone is converted away.
+
+### Changed
+
+- **`magento/module-customer` is now a hard dependency.** `VisitorContext` reads the group and
+  login-state keys that `Magento\Customer\Model\Context` defines. It is base product, present in
+  every Magento install, so this does not narrow where the package can be used — but it is a real
+  widening of a shared leaf module's footprint and is recorded here rather than left to be
+  discovered.
+
+### Notes
+
+- `Muon_HeaderMenu` carries its own copies of these classes and is unaffected by this release. It
+  converges onto these contracts in a later version; until then the two sets coexist in different
+  namespaces and resolve independently.
+
 ## [1.4.0] - 2026-08-04
 
 ### Added
