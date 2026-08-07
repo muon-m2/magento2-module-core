@@ -179,6 +179,20 @@ class ScheduleWindowTest extends TestCase
             'empty' => [''],
             'whitespace' => ['   '],
             'prose' => ['sometime next week'],
+            // RELATIVE EXPRESSIONS ARE THE ONES THAT MATTER. new DateTimeImmutable() accepts every
+            // one of these, and contains() runs at render time — so a stored "+1 day" resolves to a
+            // different instant on every request and the window silently drifts. "sometime next
+            // week" above is rejected by the loose parser too, which is exactly why testing only
+            // prose let this through.
+            'tomorrow' => ['tomorrow'],
+            'plus one day' => ['+1 day'],
+            'yesterday' => ['yesterday'],
+            'now' => ['now'],
+            // Rolled-over impossible date: createFromFormat() would silently make this 3 March.
+            'impossible date' => ['2026-02-31 00:00:00'],
+            // Trailing junk after a valid prefix.
+            'valid prefix with junk' => ['2026-01-01 00:00:00 and then some'],
+            'iso 8601' => ['2026-01-01T00:00:00Z'],
         ];
     }
 

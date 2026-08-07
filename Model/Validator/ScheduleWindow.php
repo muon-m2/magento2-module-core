@@ -10,7 +10,6 @@ namespace Muon\Core\Model\Validator;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use Exception;
 
 /**
  * The schedule-window rule, shared by validators and renderers alike.
@@ -60,7 +59,25 @@ class ScheduleWindow
     }
 
     /**
+     * The one format a stored bound may be in — Magento's datetime column format, UTC.
+     */
+    private const FORMAT = 'Y-m-d H:i:s';
+
+    /**
      * Parse a stored timestamp.
+     *
+     * STRICT FORMAT, NOT `new DateTimeImmutable($value)`. That constructor accepts RELATIVE
+     * expressions — "tomorrow", "+1 day", "yesterday", "now" all parse happily — and contains() runs
+     * at RENDER time, so a stored relative value resolves to a different instant on every single
+     * request. A window saved as "+1 day" would never open, and one saved as "yesterday" would be
+     * permanently open; neither would look wrong in the database, and neither would ever be
+     * reproducible.
+     *
+     * The distinction is invisible to a test that only tries prose: "sometime next week" is rejected
+     * by both, which is why the loose version passed for as long as it did.
+     *
+     * A caller sending ISO-8601 now gets a clear validation error at save time instead of a value
+     * that appears to work and then drifts.
      *
      * @param string|null $value
      * @return \DateTimeImmutable|null Null when absent or unparseable — the caller distinguishes the
@@ -72,11 +89,16 @@ class ScheduleWindow
             return null;
         }
 
-        try {
-            return new DateTimeImmutable($value, new DateTimeZone('UTC'));
-        } catch (Exception) {
+        $parsed = DateTimeImmutable::createFromFormat(self::FORMAT, $value, new DateTimeZone('UTC'));
+
+        if ($parsed === false) {
             return null;
         }
+
+        // createFromFormat() is forgiving about a value that merely STARTS with the format, and it
+        // silently rolls impossible dates over ("2026-02-31" becomes 3 March). Round-tripping the
+        // result is what makes both of those a rejection rather than a quiet reinterpretation.
+        return $parsed->format(self::FORMAT) === trim($value) ? $parsed : null;
     }
 
     /**

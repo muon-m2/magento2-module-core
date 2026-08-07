@@ -56,7 +56,7 @@ class CaptionListConverterTest extends TestCase
         // The analyser is RIGHT that the signature forbids a string here, and that is exactly what
         // is being tested: the type is a promise the caller makes, not a guarantee the runtime
         // enforces, and a REST payload or a restored dump can deliver a list that never passed
-        // through a type check. Asserting the converter skips the foreign entry rather than fatalling
+        // through a type check. Asserting the converter skips the foreign entry rather than failing fatally
         // is the point of the test, so the violation is deliberate and narrowly suppressed.
         /** @phpstan-ignore argument.type */
         $map = $this->converter->toMap([
