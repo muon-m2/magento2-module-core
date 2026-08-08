@@ -1,0 +1,12 @@
+Back,Back
+"Save and Continue Edit","Save and Continue Edit"
+"A store caption entry is malformed.","A store caption entry is malformed."
+"A store caption must name a specific store view.","A store caption must name a specific store view."
+"Store view with ID %1 does not exist.","Store view with ID %1 does not exist."
+"Store view with ID %1 has more than one caption.","Store view with ID %1 has more than one caption."
+"The caption for store view %1 is longer than %2 characters.","The caption for store view %1 is longer than %2 characters."
+"""Active From"" is not a valid date and time.","""Active From"" is not a valid date and time."
+"""Active To"" is not a valid date and time.","""Active To"" is not a valid date and time."
+"""Active From"" must be earlier than ""Active To"".","""Active From"" must be earlier than ""Active To""."
+"No such store.","No such store."
+"[STORE VIEW]","[STORE VIEW]"

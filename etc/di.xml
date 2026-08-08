@@ -12,4 +12,14 @@
                 type="Muon\Core\Model\Caption\ScopedCaption"/>
     <preference for="Muon\Core\Api\CaptionResolverInterface"
                 type="Muon\Core\Model\Caption\CaptionResolver"/>
+
+    <!--
+      The visibility vocabulary DOES get default preferences, unlike CaptionStorageInterface above.
+      The difference is that these have exactly one correct implementation each — there is nothing
+      per-entity to bind — so an unbound consumer would be an obstacle rather than a caught mistake.
+    -->
+    <preference for="Muon\Core\Api\VisitorContextInterface"
+                type="Muon\Core\Model\VisitorContext"/>
+    <preference for="Muon\Core\Api\VisibilityResolverInterface"
+                type="Muon\Core\Model\VisibilityResolver"/>
 </config>

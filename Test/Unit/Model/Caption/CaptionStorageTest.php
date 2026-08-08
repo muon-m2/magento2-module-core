@@ -46,7 +46,16 @@ class CaptionStorageTest extends TestCase
     /**
      * Stub the fluent bits every path needs, on whichever double the caller is building.
      *
-     * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
+     * The native parameter type stays `AdapterInterface` because that is what the method
+     * conceptually accepts. The docblock refines it to an intersection — a subtype, so the two agree
+     * — which is what makes `->method()` visible to static analysis. Without it the analyser sees
+     * only the interface and reads every stub call as undefined.
+     *
+     * `Stub`, NOT `MockObject`. Per this class's own note above, reads pass a stub and writes pass a
+     * mock, and `Stub` is the supertype of the two: `MockObject extends Stub`, and `method()` is
+     * declared on `Stub`. Narrowing to `MockObject` here would reject every read-side caller.
+     *
+     * @param \PHPUnit\Framework\MockObject\Stub&\Magento\Framework\DB\Adapter\AdapterInterface $connection
      * @return void
      */
     private function stubQueryBuilding(AdapterInterface $connection): void
