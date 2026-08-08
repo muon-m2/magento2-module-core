@@ -82,6 +82,13 @@ class ScheduleWindow
      * @param string|null $value
      * @return \DateTimeImmutable|null Null when absent or unparseable — the caller distinguishes the
      *                                 two by checking the input for null itself.
+     *
+     * @SuppressWarnings("PHPMD.StaticAccess") DateTimeImmutable::createFromFormat() is PHP's named
+     *                  constructor for a value object, not static access to a collaborator. The rule
+     *                  exists to stop a class reaching a service statically — untestable and
+     *                  unmockable — and neither applies to a built-in date type with no state and no
+     *                  dependencies. The alternative, `new DateTimeImmutable($value)`, is precisely
+     *                  what this method was changed away from: it accepts relative expressions.
      */
     public function parse(?string $value): ?DateTimeImmutable
     {
